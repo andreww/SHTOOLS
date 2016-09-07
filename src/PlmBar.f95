@@ -166,6 +166,11 @@ subroutine PlmBar(p, lmax, z, csphase, cnorm, exitstatus)
 
         end if
 
+        ! Assume we will exit OK after this...
+        if (present(exitstatus)) then
+            exitstatus = 0
+        endif
+
         !----------------------------------------------------------------------
         !
         !   Precompute square roots of integers that are used several times.

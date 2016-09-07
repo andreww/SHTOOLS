@@ -108,22 +108,32 @@ shtools.__doc__ = (
     'exception of shclasses.')
 
 
-# ---- Define FortranStop exception that handles a fortran STOP.
-class FortranStop(Exception):
-    '''Class that handles errors generated in SHTOOLS Fortran 95 code.'''
-    def __call__(self, status):
-        if (status == 1):
-            errmsg = 'Improper dimensions of input array.'
-        elif (status == 2):
-            errmsg = 'Improper bounds for input variable.'
-        elif (status == 3):
-            errmsg = 'Error allocating memory.'
-        else:
-            errmsg = 'Unhandled Fortran 95 error.'
+class SHToolsError(Exception):
+    pass
 
-        raise self.__class__(errmsg)
 
-_SHTOOLS.pystop = FortranStop()
+def get_status_message(status):
+    if (status == 1):
+        message = 'Improper dimensions of input array.'
+    elif (status == 2):
+        message = 'Improper bounds for input variable.'
+    elif (status == 3):
+        message = 'Error allocating memory.'
+    else:
+        message = 'Unhandled Fortran 95 error.'
+    return message
+
+
+def raise_errors(func):
+    def wrapped_func(*args, **kwargs):
+        returned_values = func(*args, **kwargs)
+        if returned_values[0] != 0:
+            raise SHToolsError(get_status_message(returned_values[0]))
+        return returned_values[1:]
+    wrapped_func.__doc__ = func.__doc__
+    return wrapped_func
+
+_SHTOOLS.PlmBar = raise_errors(_SHTOOLS.PlmBar)
 
 # ---- Define __all__ for use with: from pyshtools import * ----
 __all__ = ['constant', 'shclasses', 'SHCoeffs', 'SHGrid', 'SHWindow',

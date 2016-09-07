@@ -1,4 +1,4 @@
-    subroutine pyPlmBar(p,lmax,z,csphase,cnorm,p_d0)
+    subroutine pyPlmBar(exitstatus,p,lmax,z,csphase,cnorm,p_d0)
         use shtools, only: PlmBar
         implicit none
         real*8, dimension(p_d0),intent(out) :: p
@@ -7,10 +7,9 @@
         integer, optional,intent(in) :: csphase
         integer, optional,intent(in) :: cnorm
         integer, intent(in) :: p_d0
-        integer :: exitstatus = 0
-        external :: pystop
+        integer, intent(out) :: exitstatus 
+        exitstatus = 0
         call PlmBar(p,lmax,z,csphase=csphase,cnorm=cnorm,exitstatus=exitstatus)
-        if (exitstatus /= 0) call pystop(exitstatus)
     end subroutine pyPlmBar
 
     subroutine pyPlmBar_d1(p,dp,lmax,z,csphase,cnorm,p_d0,dp_d0)

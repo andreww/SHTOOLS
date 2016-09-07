@@ -10,18 +10,15 @@ python module _SHTOOLS
 !-------------------------------------------------------------------------------
     interface
    
-        subroutine PlmBar(p,lmax,z,csphase,cnorm,p_d0)
+        subroutine PlmBar(exitstatus, p,lmax,z,csphase,cnorm,p_d0)
             fortranname pyplmbar
             real*8 dimension(p_d0),intent(out) :: p
+            integer intent(out) :: exitstatus
             integer intent(in) :: lmax
             real*8 intent(in) :: z
             integer, optional,intent(in) :: csphase = 1
             integer, optional,intent(in) :: cnorm = 0
             integer, intent(hide),depend(lmax) :: p_d0 = (lmax+1)*(lmax+2)/2
-            intent(callback,hide) pystop
-            external pystop
-            integer exitstatus
-            call pystop(exitstatus)
         end subroutine PlmBar
 
         subroutine PlmBar_d1(p,dp,lmax,z,csphase,cnorm,p_d0,dp_d0)
